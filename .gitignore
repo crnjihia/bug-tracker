@@ -1,0 +1,37 @@
+# Backend (Django)
+*.pyc
+*.pyo
+__pycache__
+db.sqlite3
+/venv/
+*.log
+*.pot
+*.py[cod]
+instance/
+.env
+
+# Frontend (React)
+node_modules/
+build/
+dist/
+*.env
+*.log
+*.swp
+*.swo
+.idea/
+.vscode/
+
+# MacOS
+.DS_Store
+
+# IDEs and Text Editors
+*.iml
+.vscode/
+.idea/
+*.sublime-workspace
+
+# Django migrations folder 
+migrations/
+
+# System Files
+Thumbs.db
