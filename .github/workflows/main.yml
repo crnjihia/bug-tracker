@@ -1,0 +1,54 @@
+# GitHub Actions CI Workflow
+
+name: CI Workflow
+
+on:
+  push:
+    branches: [main, develop]
+  pull_request:
+    branches: [main, develop]
+
+jobs:
+  build-and-test:
+    runs-on: ubuntu-latest
+
+    strategy:
+      matrix:
+        node-version: [18.x]
+
+    steps:
+      - name: Checkout repository
+        uses: actions/checkout@v3
+
+      - name: Setup Node.js
+        uses: actions/setup-node@v3
+        with:
+          node-version: ${{ matrix.node-version }}
+
+      - name: Install dependencies (Frontend)
+        working-directory: ./client
+        run: npm install
+
+      - name: Install dependencies (Backend)
+        working-directory: ./server
+        run: npm install
+
+      - name: Lint Frontend
+        working-directory: ./client
+        run: npm run lint || echo "Linting failed but proceeding"
+
+      - name: Lint Backend
+        working-directory: ./server
+        run: npm run lint || echo "Linting failed but proceeding"
+
+      - name: Run Frontend Tests
+        working-directory: ./client
+        run: npm test --if-present
+
+      - name: Run Backend Tests
+        working-directory: ./server
+        run: npm test --if-present
+
+      - name: Build Frontend
+        working-directory: ./client
+        run: npm run build

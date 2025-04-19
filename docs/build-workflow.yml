@@ -1,0 +1,50 @@
+name: Build Only Workflow
+
+on:
+  workflow_dispatch:
+  push:
+    branches: [main, develop]
+  pull_request:
+    branches: [main, develop]
+
+jobs:
+  build:
+    runs-on: ubuntu-latest
+
+    strategy:
+      matrix:
+        node-version: [18.x]
+
+    steps:
+      - name: Checkout code
+        uses: actions/checkout@v3
+
+      - name: Set up Node.js
+        uses: actions/setup-node@v3
+        with:
+          node-version: ${{ matrix.node-version }}
+
+      - name: Install frontend dependencies
+        working-directory: ./client
+        run: npm ci
+
+      - name: Build frontend
+        working-directory: ./client
+        run: npm run build
+
+      - name: Install backend dependencies
+        working-directory: ./server
+        run: npm ci
+
+      - name: (Optional) Compile backend
+        working-directory: ./server
+        run: echo "No build step needed for plain Node.js"  # Replace if using TypeScript or build tools
+
+      - name: Archive production artifacts
+        if: success()
+        uses: actions/upload-artifact@v3
+        with:
+          name: built-app
+          path: |
+            client/dist
+            server/
